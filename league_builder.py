@@ -2,41 +2,35 @@ import csv
 
 exp_players = []
 nov_players = []
-Sharks = []
-Dragons = []
-Raptors = []
 
-def reader():
-    with open('soccer_players.csv', newline=' ') as csv_file:
+def read_and_divide(info):
+    # Function to read csv file and split players based on experience
+    with open(info, newline=' ') as csvfile:
         players = csv.DictReader(csvfile, delimiter=',')
         for player in players:
-            if player[2] == 'YES':
+            if player['Soccer Experience'] == 'YES':
                 exp_players.append(player)
-            if player[2] == 'NO':
+            else:
                 nov_players.append(player)
 
-def divide_teams():
-    Sharks.append(exp_players[:3] + nov_players[:3])
-    Dragons.append(exp_players[3:6] + nov_players[3:6])
-    Raptors.append(exp_players[6:] + nov_players[6:])
-
-def roster(team):
-    print(team, '\n', '=' * 10)
-    for player in team:
-        print(player + '\n')
-
-def roster_list():
-    with open('teams.txt', 'a') as file:
-        file.write(roster(Sharks), roster(Dragons), roster(Raptors))
-
+def roster():
+    # Function to equally assign players to teams and print out roster
+    sharks = exp_players[:3] + nov_players[:3]
+    dragons = exp_players[3:6] + nov_players[3:6]
+    raptors = exp_players[6:] + nov_players[6:]
+    every_team = {'Sharks': sharks, 'Dragons': dragons, 'Raptors': raptors}
+    with open('teams.txt', 'w') as new_file:
+        for name, team in every_team.items():
+            new_file.write('\n{}\n'.format(name))
+            new_file.write('-' * 10)
+            for player in team:
+                new_file.write('\n{}\n'.format(player['Name']))
+        
 def all_together():
-    reader(soccer_players.csv)
-    divide_teams()
-    roster(Sharks)
-    roster(Dragons)
-    roster(Raptors)
-    roster_list()
-
-
+    # Function to combine previous two functions
+    read_and_divide('soccer_players.csv')
+    roster()
+        
 if __name__ == '__main__':
+    # Main logic work
     all_together()
